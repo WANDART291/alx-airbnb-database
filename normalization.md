@@ -1,6 +1,7 @@
 # Database Normalization - Airbnb Clone
 
-This document describes how the Airbnb Clone database schema was normalized to eliminate redundancy, maintain data integrity, and improve scalability.
+## Objective
+Apply normalization principles to ensure the database is in the third normal form (3NF).
 
 ---
 
@@ -9,60 +10,56 @@ This document describes how the Airbnb Clone database schema was normalized to e
 
 - **User Table**  
   - `user_id` is the primary key.  
-  - Each column holds a single value (e.g., one email, one role per user).  
+  - Attributes such as `first_name`, `last_name`, and `email` are atomic.  
 
 - **Property Table**  
   - `property_id` is the primary key.  
-  - Attributes like `name`, `description`, `price_per_night` are atomic.  
+  - Attributes such as `name`, `description`, `location`, and `pricepernight` are atomic.  
 
-✅ Example: Instead of storing multiple phone numbers in one column, each user record has a single `phone_number`.
+- **Booking Table**  
+  - `booking_id` is the primary key.  
+  - Attributes such as `start_date`, `end_date`, `total_price`, and `status` are atomic.  
+
+✅ At this stage, the schema avoids repeating groups and ensures each attribute stores one value.
 
 ---
 
 ## 2. Second Normal Form (2NF)
-**Rule**: All non-key attributes must depend on the whole primary key (no partial dependency).
+**Rule**: All non-key attributes must depend on the whole primary key (no partial dependency).  
+This is most relevant in tables with composite primary keys (but here we use single-column primary keys).  
 
 - **Booking Table**  
-  - `booking_id` is the primary key.  
-  - Attributes `start_date`, `end_date`, `total_price`, and `status` depend entirely on `booking_id`.  
+  - `total_price` depends only on the booking, not partially on `property_id` or `user_id`.  
 
 - **Payment Table**  
-  - `payment_id` is the primary key.  
-  - Attributes `amount`, `payment_date`, and `payment_method` depend only on `payment_id`.  
+  - `amount` and `payment_method` depend on the full `payment_id`, not partially on `booking_id`.  
 
-✅ Example: In `Booking`, `total_price` depends only on the unique booking, not partially on `property_id` or `user_id`.
+✅ All non-key attributes depend entirely on the primary key, so 2NF is satisfied.
 
 ---
 
 ## 3. Third Normal Form (3NF)
-**Rule**: Remove transitive dependencies (non-key attributes should not depend on other non-key attributes).
+**Rule**: Remove transitive dependencies (non-key attributes should not depend on other non-key attributes).  
 
-- **Payment** was separated from **Booking**.  
-  - Instead of storing `amount` and `payment_method` in `Booking`, these were moved to a `Payment` table, linked by `booking_id`.  
+- **Payment** separated from **Booking**  
+  - Instead of storing payment details (`amount`, `payment_method`) in `Booking`, a separate `Payment` table was created, linked by `booking_id`.  
 
-- **Review** was separated from **Property**.  
-  - Instead of storing ratings and comments in `Property`, they are stored in `Review`, linked by `property_id` and `user_id`.  
+- **Review** separated from **Property**  
+  - Instead of storing ratings and comments in the `Property` table, they are stored in a separate `Review` table, linked by `property_id` and `user_id`.  
 
-✅ Example: If a user leaves multiple reviews for different properties, reviews are stored independently without duplicating property data.
+- **Message** separated from **User**  
+  - Instead of mixing messages with user data, a `Message` table was created with `sender_id` and `recipient_id` as foreign keys to the `User` table.  
 
----
-
-## 4. Boyce-Codd Normal Form (BCNF)
-**Rule**: Every determinant must be a candidate key.
-
-- In **Message Table**, `message_id` uniquely determines `sender_id`, `recipient_id`, `message_body`, and `sent_at`.  
-- In **Review Table**, `review_id` uniquely determines `rating` and `comment`.  
-
-There are no anomalies caused by non-candidate keys determining other attributes.
+✅ After these adjustments, there are no transitive dependencies. Each non-key attribute depends only on the primary key of its table.
 
 ---
 
 ## ✅ Conclusion
-The Airbnb Clone database schema is normalized up to **3NF/BCNF**:
-- **1NF**: All attributes are atomic.  
-- **2NF**: All non-key fields depend on the full primary key.  
-- **3NF**: Transitive dependencies removed (Payments, Reviews, Messages separated).  
-- **BCNF**: All functional dependencies are based on candidate keys.  
+The Airbnb Clone database schema has been normalized to **Third Normal Form (3NF)**:  
+- **1NF**: Atomic values ensured.  
+- **2NF**: No partial dependencies.  
+- **3NF**: Transitive dependencies removed by separating Payments, Reviews, and Messages.  
 
-This ensures minimal redundancy, strong data integrity, and efficient scalability for the project.
+This design minimizes redundancy, preserves data integrity, and supports scalability.
+
 
