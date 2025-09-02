@@ -96,6 +96,13 @@ After running the query
 | p2           | Beach House    | Durban       | NULL       | NULL   | NULL            | NULL         |
 | p3           | City Studio    | Johannesburg | r2         | 4      | Great location  | 2025-08-15   |
 
+  | property\_id | property\_name | location     | review\_id | rating | comment         | review\_date |
+| ------------ | -------------- | ------------ | ---------- | ------ | --------------- | ------------ |
+| p1           | Cozy Loft      | Cape Town    | r1         | 5      | Excellent stay! | 2025-08-12   |
+| p2           | Beach House    | Durban       | NULL       | NULL   | NULL            | NULL         |
+| p3           | City Studio    | Johannesburg | r2         | 4      | Great location  | 2025-08-15   |
+  
+
 # Airbnb Clone Database – FULL OUTER JOIN Query
 
 ## 🔹 Query 3: Retrieve All Users and All Bookings
