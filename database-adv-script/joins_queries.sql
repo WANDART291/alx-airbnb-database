@@ -26,6 +26,8 @@ FROM Booking b
 INNER JOIN User u
     ON b.user_id = u.user_id;
 
+
+Before running the query
 User table
 
 | user\_id | first\_name | last\_name | email                                         |
