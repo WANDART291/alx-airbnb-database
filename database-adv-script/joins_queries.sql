@@ -96,6 +96,58 @@ After running the query
 | p2           | Beach House    | Durban       | NULL       | NULL   | NULL            | NULL         |
 | p3           | City Studio    | Johannesburg | r2         | 4      | Great location  | 2025-08-15   |
 
+# Airbnb Clone Database – FULL OUTER JOIN Query
+
+## 🔹 Query 3: Retrieve All Users and All Bookings
+
+This query demonstrates how to use a **FULL OUTER JOIN** to combine the `User` and `Booking` tables.  
+It returns all users and all bookings, even if:  
+- A user has **no bookings**, or  
+- A booking is **not linked to a user**.  
+
+📌 **SQL Query:**
+```sql
+SELECT 
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.email,
+    b.booking_id,
+    b.property_id,
+    b.start_date,
+    b.end_date
+FROM User u
+FULL OUTER JOIN Booking b
+    ON u.user_id = b.user_id;
+
+Before running the query
+User table
+| user\_id | first\_name | last\_name | email                                         |
+| -------- | ----------- | ---------- | --------------------------------------------- |
+| u1       | Alice       | Johnson    | [alice@example.com](mailto:alice@example.com) |
+| u2       | Bob         | Smith      | [bob@example.com](mailto:bob@example.com)     |
+| u3       | Carol       | Davis      | [carol@example.com](mailto:carol@example.com) |
+
+Before running the query
+Booking table
+| booking\_id | property\_id | start\_date | end\_date  | user\_id |
+| ----------- | ------------ | ----------- | ---------- | -------- |
+| b1          | p1           | 2025-09-10  | 2025-09-15 | u1       |
+| b2          | p3           | 2025-09-12  | 2025-09-18 | u2       |
+| b3          | p5           | 2025-09-20  | 2025-09-25 | NULL     |
+
+After running the query
+| user\_id | first\_name | last\_name | email                                         | booking\_id | property\_id | start\_date | end\_date  |
+| -------- | ----------- | ---------- | --------------------------------------------- | ----------- | ------------ | ----------- | ---------- |
+| u1       | Alice       | Johnson    | [alice@example.com](mailto:alice@example.com) | b1          | p1           | 2025-09-10  | 2025-09-15 |
+| u2       | Bob         | Smith      | [bob@example.com](mailto:bob@example.com)     | b2          | p3           | 2025-09-12  | 2025-09-18 |
+| u3       | Carol       | Davis      | [carol@example.com](mailto:carol@example.com) | NULL        | NULL         | NULL        | NULL       |
+| NULL     | NULL        | NULL       | NULL                                          | b3          | p5           | 2025-09-20  | 2025-09-25 |
+
+
+
+
+
 
 
 
