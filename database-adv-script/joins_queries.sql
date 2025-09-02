@@ -61,32 +61,17 @@ User table
 This query demonstrates how to use a **LEFT JOIN** to combine the `Property` and `Review` tables.  
 It returns all properties and their reviews. If a property has no review, it will still appear in the results, but the review fields will be `NULL`.
 
-📌 **SQL Query:**
-```sql
 SELECT 
-    p.property_id,
-    p.name AS property_name,
-    p.location,
-    r.review_id,
-    r.rating,
-    r.comment,
-    r.created_at AS review_date
-FROM Property p
-LEFT JOIN Review r
-    ON p.property_id = r.property_id;
-
-SELECT 
-    p.property_id,
-    p.name AS property_name,
-    p.location,
-    r.review_id,
-    r.rating,
-    r.comment,
-    r.created_at AS review_date
-FROM Property p
-LEFT JOIN Review r
-    ON p.property_id = r.property_id;
-
+    Property.property_id,
+    Property.name,
+    Property.location,
+    Review.review_id,
+    Review.rating,
+    Review.comment,
+    Review.created_at
+FROM Property
+LEFT JOIN Review
+    ON Property.property_id = Review.property_id;
 
 before running the query
     Property Table
