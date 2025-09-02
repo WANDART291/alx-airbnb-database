@@ -52,5 +52,52 @@ User table
 | b3          | p2           | 2025-09-20  | 2025-09-25 | u3       | Carol       | Davis      | [carol@example.com](mailto:carol@example.com) |
 
 
+    # Airbnb Clone Database – LEFT JOIN Query
+
+## 🔹 Query 2: Retrieve Properties and Their Reviews
+
+This query demonstrates how to use a **LEFT JOIN** to combine the `Property` and `Review` tables.  
+It returns all properties and their reviews. If a property has no review, it will still appear in the results, but the review fields will be `NULL`.
+
+📌 **SQL Query:**
+```sql
+SELECT 
+    p.property_id,
+    p.name AS property_name,
+    p.location,
+    r.review_id,
+    r.rating,
+    r.comment,
+    r.created_at AS review_date
+FROM Property p
+LEFT JOIN Review r
+    ON p.property_id = r.property_id;
+
+before running the query
+    Property Table
+| property\_id | name        | location     |
+| ------------ | ----------- | ------------ |
+| p1           | Cozy Loft   | Cape Town    |
+| p2           | Beach House | Durban       |
+| p3           | City Studio | Johannesburg |
+
+    Review table
+| review\_id | property\_id | rating | comment         | created\_at |
+| ---------- | ------------ | ------ | --------------- | ----------- |
+| r1         | p1           | 5      | Excellent stay! | 2025-08-12  |
+| r2         | p3           | 4      | Great location  | 2025-08-15  |
+
+After running the query
+| property\_id | property\_name | location     | review\_id | rating | comment         | review\_date |
+| ------------ | -------------- | ------------ | ---------- | ------ | --------------- | ------------ |
+| p1           | Cozy Loft      | Cape Town    | r1         | 5      | Excellent stay! | 2025-08-12   |
+| p2           | Beach House    | Durban       | NULL       | NULL   | NULL            | NULL         |
+| p3           | City Studio    | Johannesburg | r2         | 4      | Great location  | 2025-08-15   |
+
+
+
+
+
+
 
 
