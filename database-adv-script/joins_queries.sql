@@ -75,6 +75,19 @@ FROM Property p
 LEFT JOIN Review r
     ON p.property_id = r.property_id;
 
+SELECT 
+    p.property_id,
+    p.name AS property_name,
+    p.location,
+    r.review_id,
+    r.rating,
+    r.comment,
+    r.created_at AS review_date
+FROM Property p
+LEFT JOIN Review r
+    ON p.property_id = r.property_id;
+
+
 before running the query
     Property Table
 | property\_id | name        | location     |
@@ -96,11 +109,7 @@ After running the query
 | p2           | Beach House    | Durban       | NULL       | NULL   | NULL            | NULL         |
 | p3           | City Studio    | Johannesburg | r2         | 4      | Great location  | 2025-08-15   |
 
-  | property\_id | property\_name | location     | review\_id | rating | comment         | review\_date |
-| ------------ | -------------- | ------------ | ---------- | ------ | --------------- | ------------ |
-| p1           | Cozy Loft      | Cape Town    | r1         | 5      | Excellent stay! | 2025-08-12   |
-| p2           | Beach House    | Durban       | NULL       | NULL   | NULL            | NULL         |
-| p3           | City Studio    | Johannesburg | r2         | 4      | Great location  | 2025-08-15   |
+  
   
 
 # Airbnb Clone Database – FULL OUTER JOIN Query
