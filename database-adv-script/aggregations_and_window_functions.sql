@@ -15,20 +15,30 @@ GROUP BY
     u.email
 ORDER BY total_bookings DESC;
 
--- Query: Rank properties based on the total number of bookings
--- Using RANK() window function to handle ties in booking counts
+-- Leaderboard of properties by total bookings
+-- Step 1: aggregate bookings per property
+-- Step 2: apply window functions to rank
 
-SELECT 
-    p.property_id,
-    p.name AS property_name,
-    COUNT(b.booking_id) AS total_bookings,
-    RANK() OVER (ORDER BY COUNT(b.booking_id) DESC) AS booking_rank
-FROM Property p
-LEFT JOIN Booking b
-    ON p.property_id = b.property_id
-GROUP BY 
-    p.property_id,
-    p.name
+WITH property_bookings AS (
+    SELECT
+        p.property_id,
+        p.name AS property_name,
+        COUNT(b.booking_id) AS total_bookings
+    FROM Property p
+    LEFT JOIN Booking b
+        ON b.property_id = p.property_id
+    GROUP BY
+        p.property_id,
+        p.name
+)
+SELECT
+    property_id,
+    property_name,
+    total_bookings,
+    RANK()       OVER (ORDER BY total_bookings DESC)                         AS booking_rank,
+    ROW_NUMBER() OVER (ORDER BY total_bookings DESC, property_name ASC)      AS booking_row_number
+FROM property_bookings
 ORDER BY booking_rank, property_name;
+
 
 
