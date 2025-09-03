@@ -29,5 +29,6 @@ LEFT JOIN Booking b
 GROUP BY 
     p.property_id,
     p.name
-ORDER BY booking_rank;
+ORDER BY booking_rank, property_name;
+
 
