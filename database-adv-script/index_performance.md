@@ -1,84 +1,21 @@
--- File: query_performance_analysis.sql
--- Purpose: Measure query performance before and after adding indexes
+-- File: high_usage_columns.sql
+-- Purpose: Identify high-usage columns in User, Booking, and Property tables
+-- High-usage columns are typically used in WHERE, JOIN, and ORDER BY clauses
 -- Author: [Your Name]
 -- Date: [Insert Date]
 
--- ==============================
--- 1. Example: Total bookings per user before adding indexes
--- ==============================
-EXPLAIN ANALYZE
-SELECT 
-    u.user_id,
-    u.full_name,
-    COUNT(b.booking_id) AS total_bookings
-FROM User u
-LEFT JOIN Booking b
-    ON u.user_id = b.user_id
-GROUP BY u.user_id, u.full_name
-ORDER BY total_bookings DESC;
-
--- ==============================
--- 2. Example: Properties leaderboard before adding indexes
--- ==============================
-EXPLAIN ANALYZE
-WITH property_bookings AS (
-    SELECT
-        p.property_id,
-        p.name AS property_name,
-        COUNT(b.booking_id) AS total_bookings
-    FROM Property p
-    LEFT JOIN Booking b
-        ON b.property_id = p.property_id
-    GROUP BY p.property_id, p.name
-)
-SELECT
-    property_id,
-    property_name,
-    total_bookings,
-    RANK() OVER (ORDER BY total_bookings DESC) AS booking_rank
-FROM property_bookings
-ORDER BY booking_rank;
-
--- ==============================
--- 3. After creating indexes (from database_index.sql)
--- ==============================
--- Run the same queries again to measure improvements
-
--- File: query_performance.sql
--- Purpose: Measure query performance before and after adding indexes
--- Author: [Your Name]
--- Date: [Insert Date]
-
--- File: query_performance_simple.sql
--- Purpose: Measure query performance before and after adding indexes
--- Author: [Your Name]
--- Date: [Insert Date]
-
--- =========================================
--- 1. Total bookings per user
--- =========================================
-
--- Measure query performance before adding indexes
-EXPLAIN ANALYZE
-SELECT u.user_id, u.full_name, COUNT(b.booking_id) AS total_bookings
-FROM User u
-LEFT JOIN Booking b
-    ON u.user_id = b.user_id
-GROUP BY u.user_id, u.full_name
-ORDER BY total_bookings DESC;
-
--- =========================================
--- 2. Properties leaderboard by total bookings
--- =========================================
-
--- Measure query performance before adding indexes
-EXPLAIN ANALYZE
-SELECT p.property_id, p.name AS property_name, COUNT(b.booking_id) AS total_bookings
-FROM Property p
-LEFT JOIN Booking b
-    ON p.property_id = b.property_id
-GROUP BY p.property_id, p.name
-ORDER BY total_bookings DESC;
-
-
-
+SELECT 'User' AS table_name, 'user_id' AS column_name, 'Primary key, used in JOINs with Booking table' AS usage_reason
+UNION ALL
+SELECT 'User', 'email', 'Frequently used in WHERE filters for user lookups'
+UNION ALL
+SELECT 'Booking', 'booking_id', 'Primary key, used in queries and ordering results'
+UNION ALL
+SELECT 'Booking', 'user_id', 'Foreign key, used in JOINs with User table'
+UNION ALL
+SELECT 'Booking', 'property_id', 'Foreign key, used in JOINs with Property table'
+UNION ALL
+SELECT 'Booking', 'created_at', 'Frequently used in WHERE and ORDER BY for date-based queries'
+UNION ALL
+SELECT 'Property', 'property_id', 'Primary key, used in JOINs with Booking and Review tables'
+UNION ALL
+SELECT 'Property', 'location', 'Frequently used in WHERE filters for property searches';
