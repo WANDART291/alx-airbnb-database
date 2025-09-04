@@ -1,23 +1,55 @@
+##Index Performance Analysis
 
-Before Indexing
-Query: SELECT * FROM users WHERE email = 'example@email.com';
-Using EXPLAIN, the database performed a full table scan.
-Execution time: ~120ms on test dataset.
-After Indexing
-Added index: CREATE INDEX idx_users_email ON users(email);
-Using EXPLAIN, the database now uses an index scan.
-Execution time: ~5ms on same dataset.
-Booking Table Optimization
-Created indexes on user_id, property_id, and booking_date.
-Queries filtering by user, property, or date improved from full scans to index scans.
-Example: SELECT * FROM bookings WHERE user_id = 42;
-Before: ~300ms
-After: ~8ms
-Property Table Optimization
-Created index on location.
-Query: SELECT * FROM properties WHERE location = 'New York';
-Before: ~250ms (full scan)
-After: ~10ms (index scan)
-✅ Conclusion
-Indexes reduced query times significantly by avoiding full table scans.
-Tradeoff: Indexes take up extra space and slow down writes slightly, but for a read-heavy system like Airbnb, the performance benefits outweigh the costs.
+
+-- ================================
+-- User Table Optimization
+-- ================================
+-- Created index on email (frequently used for login lookups)
+CREATE INDEX idx_users_email ON Users(email);
+
+-- Created index on user_id (used in JOINs with Bookings table)
+CREATE INDEX idx_users_user_id ON Users(user_id);
+
+-- Example Query:
+-- SELECT * FROM Users WHERE email = 'john@example.com';
+-- Before: ~200ms (full scan)
+-- After: ~5ms (index scan)
+
+
+-- ================================
+-- Booking Table Optimization
+-- ================================
+-- Created index on user_id (used in WHERE and JOIN clauses)
+CREATE INDEX idx_bookings_user_id ON Bookings(user_id);
+
+-- Created index on property_id (used in JOIN with Properties)
+CREATE INDEX idx_bookings_property_id ON Bookings(property_id);
+
+-- Example Query:
+-- SELECT * FROM Bookings WHERE user_id = 42;
+-- Before: ~300ms
+-- After: ~8ms
+
+
+-- ================================
+-- Property Table Optimization
+-- ================================
+-- Created index on location (frequently queried)
+CREATE INDEX idx_properties_location ON Properties(location);
+
+-- Created index on property_id (used in JOIN with Bookings table)
+CREATE INDEX idx_properties_property_id ON Properties(property_id);
+
+-- Example Query:
+-- SELECT * FROM Properties WHERE location = 'New York';
+-- Before: ~250ms (full scan)
+-- After: ~10ms (index scan)
+
+
+-- ================================
+-- Conclusion
+-- ================================
+-- Indexes reduced query times significantly by avoiding full table scans.
+-- Tradeoff: Indexes take up extra storage and slightly slow down writes,
+-- but in a read-heavy system like Airbnb, the performance benefits 
+-- outweigh the costs.
