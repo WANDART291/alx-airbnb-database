@@ -1,29 +1,19 @@
--- File: database_index.sql
--- Purpose: Create indexes on high-usage columns for performance optimization
--- Author: [Your Name]
--- Date: [Insert Date]
+-- Before adding index: Check performance on users.email
+EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'example@email.com';
 
--- ==============================
--- Indexes for User table
--- ==============================
-CREATE INDEX idx_user_email
-    ON User(email);
+-- Create an index on email for fast user lookups
+CREATE INDEX idx_users_email ON users(email);
 
--- ==============================
--- Indexes for Booking table
--- ==============================
-CREATE INDEX idx_booking_user_id
-    ON Booking(user_id);
+-- After adding index: Check performance again
+EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'example@email.com';
 
-CREATE INDEX idx_booking_property_id
-    ON Booking(property_id);
 
-CREATE INDEX idx_booking_created_at
-    ON Booking(created_at);
 
--- ==============================
--- Indexes for Property table
--- ==============================
-CREATE INDEX idx_property_location
-    ON Property(location);
+-- Before adding index: Check performance on bookings.user_id
+EXPLAIN ANALYZE SELECT * FROM bookings WHERE user_id = 42;
 
+-- Create index
+CREATE INDEX idx_bookings_user_id ON bookings(user_id);
+
+-- After adding index
+EXPLAIN ANALYZE SELECT * FROM bookings WHERE user_id = 42;
